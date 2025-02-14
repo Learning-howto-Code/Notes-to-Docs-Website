@@ -1,0 +1,157 @@
+.General Reset */
+body {
+    background-color: #121118; 
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main Layout */
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    max-width: 1200px;
+}
+
+/* Left Side (File Upload) */
+/* Left Side (File Upload) */
+/* Left Side (File Upload) */
+.left {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    background: transparent;
+    z-index: 1; /* Ensures content stays above */
+}
+
+/* Glowing animated border */
+.left::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    padding: 5px; /* Border thickness */
+    background: linear-gradient(45deg, #F77F00, #FCBF49, #6d4aff, #00D4FF);
+    background-size: 300% 300%;
+    animation: movingGradient 4s linear infinite;
+    z-index: -1;
+    mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
+    -webkit-mask-composite: xor;
+}
+
+/* Smooth animated gradient */
+@keyframes movingGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+.upload-btn {
+    background-color: transparent;
+    color: rgb(199, 199, 199);
+    font-size: 1.25rem;
+    padding: 24px 48px;
+    border: 4px solid white; /* Wireframe effect */
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect for button */
+.upload-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Hide default file input */
+#file-upload {
+    display: none;
+}
+
+/* Right Side (Text + Buttons) */
+.right {
+    flex: 1;
+    text-align: left;
+    padding-left: 50px;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+/* Buttons */
+.buttons {
+    margin-top: 20px;
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 6px;
+    margin-right: 10px;
+}
+
+.primary {
+    background-color: 1B2021f;
+    color: white;
+}
+
+.secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid #6d4aff;
+}
+
+
+/* This makes the background light gray */
+body {
+    background-color: #1B2021;
+}
+
+/* This makes the title blue and bigger */
+h1 {
+    color: #F77F00;
+    font-size: 40px;
+    font-family: "ariel";
+    text-align: center;
+}
+
+/* This makes the paragraph text red */
+p {
+    color: #FCBF49;
+    font-family: "ariel";
+    font-size: 20px;
+}

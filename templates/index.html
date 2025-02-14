@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body> 
+    <div class="container">
+        <!-- Left Side (File Upload) -->
+        <div class="left">
+            <form id="upload-form">
+                <input type="file" id="file-upload" name="file" multiple>
+                <label for="file-upload" class="upload-btn">Upload a File</label>
+                <button type="submit" class="upload-btn">Submit</button>
+            </form>
+            <h3>Uploaded Files:</h3>
+            <ul id="file-list"></ul> <!-- List to display uploaded files -->
+        </div>
+
+
+        <!-- Right Side (Text and Buttons) -->
+        <div class="right">
+            <h1>Convert Your Notes to Docs</h1>
+            <p>Upload your handwritten notes and instantly convert them into a digital document with AI-powered accuracy.</p>
+            <div class="buttons">
+                <button class="primary">Sign Up</button>
+                <button class="secondary">Login</button>
+            </div>
+        </div>
+    </div>
+</body>  
+{% endblock %}
