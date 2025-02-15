@@ -6,14 +6,14 @@
         <!-- Left Side (File Upload) -->
         <div class="left">
             <form id="upload-form">
-                <input type="file" id="file-upload" name="file" multiple>
-                <label for="file-upload" class="upload-btn">Upload a File</label>
-                <button type="submit" class="upload-btn">Submit</button>
+                <input type="file" id="file-upload" multiple> <!-- Allow multiple files -->
+                <label for="file-upload" class="upload-btn">Choose Files</label>
+                <button type="submit" class="upload-btn">Upload</button> <!-- Upload button -->
+                <button class="convert-btn" id="convert">Convert</button>
             </form>
-            <h3>Uploaded Files:</h3>
             <ul id="file-list"></ul> <!-- List to display uploaded files -->
+            <div id="results-container" class="results-section"></div>
         </div>
-
 
         <!-- Right Side (Text and Buttons) -->
         <div class="right">
@@ -25,5 +25,72 @@
             </div>
         </div>
     </div>
+    const resultHtml = `
+                        <div class="result-item">
+                            <div class="filename">📄 ${filename}</div>
+                            <div class="extracted-text">${text}</div>
+                        </div>
+                    `;
+                    resultsContainer.append(resultHtml);
+    <script>
+        document.getElementById("convert").addEventListener("click", function() {
+            fetch("/convert", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: "Button clicked!" }) // Optional data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message); // Log response from Flask
+                alert(data.message); // Display alert with response
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+    <script>
+        document.getElementById("upload-form").addEventListener("submit", async function(event) {
+            event.preventDefault();  // Prevent default form submission
+            let formData = new FormData();
+            let files = document.getElementById("file-upload").files;
+
+            if (files.length === 0) {
+                alert("Please select a file first.");
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append("file", files[i]);  // Append each file
+            }
+
+            let response = await fetch("/uploads/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                fetchFiles(); // Refresh the file list after uploading
+            } else {
+                alert("File upload failed.");
+            }
+        });
+
+        async function fetchFiles() {
+            let response = await fetch("/uploads/files"); 
+            let data = await response.json();
+            let fileList = document.getElementById("file-list");
+            fileList.innerHTML = ""; // Clear previous list
+
+            data.files.forEach(file => {
+                let listItem = document.createElement("li");
+                listItem.innerHTML = `<a href="/uploads/download/${file}" target="_blank">${file}</a>`;
+                fileList.appendChild(listItem);
+            });
+        }
+
+        fetchFiles();  // Load files on page load
+    </script>
+    
 </body>  
 {% endblock %}
