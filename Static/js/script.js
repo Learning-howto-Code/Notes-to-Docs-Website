@@ -7,24 +7,30 @@ document.getElementById("convert").addEventListener("click", async function() {
             }
         });
 
+        if (!response.ok) {
+            throw new Error("Server responded with an error.");
+        }
+
         const data = await response.json();
         
-        if (data.results) {
+        if (data.results && data.results.length > 0) {
             const resultsContainer = document.getElementById("results-container");
             resultsContainer.innerHTML = ""; // Clear previous results
             
             data.results.forEach(result => {
                 const filename = Object.keys(result)[0];
-                const text = result[filename].text;
+                const extractedText = result[filename].document_text || "No text extracted."; // Ensure correct key
                 
                 const resultHtml = `
                     <div class="result-item">
-                        <div class="filename">📄 ${filename}</div>
-                        <div class="extracted-text">${text}</div>
+                        <h3>📄 ${filename}</h3>
+                        <p>${extractedText}</p>
                     </div>
                 `;
-                resultsContainer.innerHTML += resultHtml;
+                resultsContainer.insertAdjacentHTML("beforeend", resultHtml);
             });
+        } else {
+            alert("No text extracted. Try again.");
         }
     } catch (error) {
         console.error("Conversion error:", error);
@@ -32,17 +38,24 @@ document.getElementById("convert").addEventListener("click", async function() {
     }
 });
 
+// Fetch uploaded files on page load
 async function fetchFiles() {
-    let response = await fetch("/uploads/files"); // Update route
-    let data = await response.json();
-    let fileList = document.getElementById("file-list");
-    fileList.innerHTML = ""; // Clear previous list
+    try {
+        const response = await fetch("/uploads/files"); 
+        if (!response.ok) throw new Error("Failed to fetch file list.");
 
-    data.files.forEach(file => {
-        let listItem = document.createElement("li");
-        listItem.innerHTML = `<a href="/uploads/download/${file}" target="_blank">${file}</a>`;
-        fileList.appendChild(listItem);
-    });
+        const data = await response.json();
+        const fileList = document.getElementById("file-list");
+        fileList.innerHTML = ""; // Clear previous list
+
+        data.files.forEach(file => {
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `<a href="/uploads/download/${file}" target="_blank">${file}</a>`;
+            fileList.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error("File fetch error:", error);
+    }
 }
 
 // Load files on page load

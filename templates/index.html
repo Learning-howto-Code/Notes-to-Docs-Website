@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<body> 
+    <h1>Welcome to the Home Page</h1>
+    <a href="{{ url_for('login') }}">Login</a>
+    <a href="{{ url_for('register') }}">Register</a>
+
+<body>
     <div class="container">
         <!-- Left Side (File Upload) -->
         <div class="left">
@@ -12,44 +15,58 @@
                 <button class="convert-btn" id="convert">Convert</button>
             </form>
             <ul id="file-list"></ul> <!-- List to display uploaded files -->
-            <div id="results-container" class="results-section"></div>
+            <div id="results-container" class="results-section"></div> <!-- Display converted results -->
         </div>
 
         <!-- Right Side (Text and Buttons) -->
         <div class="right">
             <h1>Convert Your Notes to Docs</h1>
             <p>Upload your handwritten notes and instantly convert them into a digital document with AI-powered accuracy.</p>
-            <div class="buttons">
-                <button class="primary">Sign Up</button>
-                <button class="secondary">Login</button>
-            </div>
+            
         </div>
     </div>
-    const resultHtml = `
-                        <div class="result-item">
-                            <div class="filename">📄 ${filename}</div>
-                            <div class="extracted-text">${text}</div>
-                        </div>
-                    `;
-                    resultsContainer.append(resultHtml);
+
     <script>
-        document.getElementById("convert").addEventListener("click", function() {
-            fetch("/convert", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ message: "Button clicked!" }) // Optional data
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.message); // Log response from Flask
-                alert(data.message); // Display alert with response
-            })
-            .catch(error => console.error("Error:", error));
+        // Convert button event listener
+        document.getElementById("convert").addEventListener("click", async function() {
+            try {
+                const response = await fetch("/convert", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: "Button clicked!" }) // Optional data
+                });
+
+                const data = await response.json();
+                
+                // Handle successful response
+                if (data.results) {
+                    const resultsContainer = document.getElementById("results-container");
+                    resultsContainer.innerHTML = ""; // Clear previous results
+
+                    data.results.forEach(result => {
+                        const filename = Object.keys(result)[0];
+                        const text = result[filename].text;
+
+                        const resultHtml = `
+                            <div class="result-item">
+                                <div class="filename">📄 ${filename}</div>
+                                <div class="extracted-text">${text}</div>
+                            </div>
+                        `;
+                        resultsContainer.insertAdjacentHTML("beforeend", resultHtml); // Append new results
+                    });
+                } else {
+                    alert("No results found.");
+                }
+            } catch (error) {
+                console.error("Conversion error:", error);
+                alert("Conversion failed: " + error.message);
+            }
         });
-    </script>
-    <script>
+
+        // File upload handler
         document.getElementById("upload-form").addEventListener("submit", async function(event) {
             event.preventDefault();  // Prevent default form submission
             let formData = new FormData();
@@ -76,8 +93,9 @@
             }
         });
 
+        // Fetch list of uploaded files and display them
         async function fetchFiles() {
-            let response = await fetch("/uploads/files"); 
+            let response = await fetch("/uploads/files");
             let data = await response.json();
             let fileList = document.getElementById("file-list");
             fileList.innerHTML = ""; // Clear previous list
@@ -91,6 +109,6 @@
 
         fetchFiles();  // Load files on page load
     </script>
-    
-</body>  
+
+</body>
 {% endblock %}
