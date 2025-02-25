@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Login</h1>
-    <form method="POST">
+    <h1>Register</h1>
+    <form method="POST" class="">
         {{ form.hidden_tag() }}
+        
         <div>
             {{ form.email.label }}<br>
             {{ form.email(size=32) }}
@@ -11,6 +12,7 @@
             {{ form.password.label }}<br>
             {{ form.password(size=32) }}
         </div>
+        
         <div>
             {{ form.submit() }}
         </div>

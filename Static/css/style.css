@@ -180,3 +180,15 @@ p {
     font-family: "ariel";
     font-size: 20px;
 }
+
+/* Register page */
+.sign_up{
+    color: rgb(124, 137, 148);
+    font-size: 20px;
+    font-family: "times_new_roman";
+}
+.login{
+    color: rgb(252, 252, 252);
+    font-size: 20px;
+    font-family: "times_new_roman";
+}

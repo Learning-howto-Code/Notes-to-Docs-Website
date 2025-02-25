@@ -5,30 +5,31 @@ import base64
 import json
 from openai import OpenAI
 from pydantic import BaseModel
-from uploads import uploads_bp
-from keys import OPENAI_KEY
-from models import User # my file
-import routes # my file
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
-from flask import Flask, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from forms import LoginForm, RegistrationForm
+from uploads import uploads_bp
+from keys import OPENAI_KEY
+from routes import app # Import routes but leave models import for later
+from flask_test import app
+from flask_test.forms import LoginForm, RegistrationForm
 
 
 app = Flask(__name__)
 app.register_blueprint(uploads_bp, url_prefix="/uploads")
 
-app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # SQLite database
-db = SQLAlchemy(app)
 
+db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# User loader callback
+# Now import User AFTER db and login_manager are defined
+from models import User  
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -96,21 +97,15 @@ def convert():
     return jsonify({"message": "Conversion successful!", "results": results})
 
 def append_to_docs():
-
     SERVICE_ACCOUNT_FILE = "/Users/jakehopkins/Documents/Flask_Test/img-to-docs-450117-078405c7be8a copy.json"
     SCOPES = ["https://www.googleapis.com/auth/documents", "https://www.googleapis.com/auth/drive"]
 
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
-    # Initialize Google Docs and Drive API services
     docs_service = build("docs", "v1", credentials=credentials)
     drive_service = build("drive", "v3", credentials=credentials)
 
-    # Create a new Google Doc
-    # document = docs_service.documents().create(body={"title": "New Flask Doc"}).execute()
     document_id = "1Nq9OTr-sQrkNvkGD3LjTJzjfrWv6XUmSL8Ycx1Ko4JU"
-
-    # print(f"New document created: https://docs.google.com/document/d/{document_id}/edit")
 
     USER_EMAIL = "jaketoroh@gmail.com"  # Replace with your email
 
@@ -129,5 +124,10 @@ def append_to_docs():
             documentId=document_id,  # Fix: Use the correct document ID
             body={"requests": requests}
         ).execute()
+
+# Ensure database tables are created before running
+with app.app_context():
+    db.create_all()
+
 if __name__ == "__main__":
     app.run(debug=True)
