@@ -15,25 +15,35 @@ from keys import OPENAI_KEY
 from routes import app # Import routes but leave models import for later
 from flask_test import app
 from flask_test.forms import LoginForm, RegistrationForm
+from flask_migrate import Migrate
 
+# Add Flask-Migrate import
+from flask_migrate import Migrate
 
+# Initialize Flask app
 app = Flask(__name__)
 app.register_blueprint(uploads_bp, url_prefix="/uploads")
 
+# Configure app
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # SQLite database
 
+# Initialize SQLAlchemy and Flask-Migrate
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)  # Initialize Flask-Migrate
+
+# Initialize LoginManager
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 # Now import User AFTER db and login_manager are defined
-from models import User  
+from .models import User  
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Your model output schema
 class Output(BaseModel):
     text: str
 
@@ -129,5 +139,6 @@ def append_to_docs():
 with app.app_context():
     db.create_all()
 
+# Initialize migrations for Flask-Migrate
 if __name__ == "__main__":
     app.run(debug=True)

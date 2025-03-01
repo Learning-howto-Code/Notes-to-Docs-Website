@@ -1,12 +1,11 @@
-from flask_test import db  # Import db from __init__.py after it's initialized
-from flask_login import UserMixin
+from flask_test import db  # Import db from __init__, NOT the other way around
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-
-
-def get_id(self):
-    return str(self.id)  # Required by Flask-Login
+    key = db.Column(db.String(120), nullable=True)
+    
+    def __repr__(self):
+        return f'<User {self.username}>'

@@ -1,27 +1,36 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 
+# Define db globally
 db = SQLAlchemy()
-login_manager = LoginManager()
 
 def create_app():
-    app = Flask(__name__)
-
-    app.config['SECRET_KEY'] = 'your-secret-key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-
+    app = Flask(__name__, instance_relative_config=True)
+    
+    # Ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path, exist_ok=True)
+    except OSError:
+        pass  # Handle potential OS errors
+    
+    # Configure the app
+    app.config.from_mapping(
+        SECRET_KEY='your_secret_key',
+        # Fix the path - remove redundant components
+        SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(app.instance_path, 'site.db'),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
+    )
+    
+    # Initialize the database with app
     db.init_app(app)
-    login_manager.init_app(app)
-
-    # Move the import here to avoid circular import
-    from flask_test.models import User  
-    from flask_test.routes import main  
+    
+    # Import routes AFTER db is initialized
+    from flask_test.routes import main
     app.register_blueprint(main)
-
+    
+    # Create tables within app context
+    with app.app_context():
+        db.create_all()
+        
     return app
-
-@login_manager.user_loader
-def load_user(user_id):
-    from flask_test.models import User  # Import inside function to avoid circular import
-    return User.query.get(int(user_id))

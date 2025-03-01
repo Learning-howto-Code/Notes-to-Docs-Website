@@ -20,6 +20,14 @@
             {{ form.confirm_password(size=32) }}
         </div>
         <div>
+            {{ form.key.label }}<br>
+            {{ form.key(size=32) }}
+        </div>
+        <div>
+            {{ form.confirm_key.label }}<br>
+            {{ form.confirm_key(size=32) }}
+        </div>
+        <div>
             {{ form.submit() }}
         </div>
     </form>

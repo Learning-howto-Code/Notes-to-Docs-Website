@@ -1,5 +1,5 @@
 from flask import render_template, request, jsonify, redirect, url_for, flash, Blueprint
-from flask_test import db
+from flask_test.models import db
 from flask_test.models import User
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_test.forms import LoginForm, RegistrationForm
@@ -23,7 +23,7 @@ def home():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data, key=form.key.data)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You can now log in.', 'success')
