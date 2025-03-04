@@ -6,6 +6,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    key = db.Column(db.String(50), unique=True, nullable=False)
 
 
 def get_id(self):
