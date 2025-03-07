@@ -18,7 +18,8 @@ from flask_test.forms import LoginForm, RegistrationForm
 
 
 app = Flask(__name__)
-app.register_blueprint(uploads_bp, url_prefix="/uploads")
+# app.register_blueprint(uploads_bp, url_prefix="/uploads")
+
 
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # SQLite database
