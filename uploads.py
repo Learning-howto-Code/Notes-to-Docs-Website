@@ -2,20 +2,20 @@ from flask import Blueprint, request, jsonify, send_from_directory
 import os
 from werkzeug.utils import secure_filename
 
-uploads_bp = Blueprint("flask_test/uploads", __name__)  # Corrected __name__ 
-UPLOAD_FOLDER = "flask_test/uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure folder exists
+uploads_bp = Blueprint("uploads", __name__)  # Blueprint name should match
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "/Users/jakehopkins/Documents/Flask_Test/uploads")  
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  
 
 @uploads_bp.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
-        return jsonify({"error": "No file part"}), 400
-    
+         return "", 204  # No content response (silent)
     files = request.files.getlist("file")
     uploaded_files = []
     
     for file in files:
-        if file.filename:  # Ensure the file has a name
+        if file.filename:
             safe_filename = secure_filename(file.filename)
             file_path = os.path.join(UPLOAD_FOLDER, safe_filename)
             file.save(file_path)
@@ -24,9 +24,9 @@ def upload_file():
     if not uploaded_files:
         return jsonify({"error": "No files uploaded"}), 400
     
-    return jsonify({"message": "Files uploaded successfully!", "files": uploaded_files})
+    return "", 204
 
-@uploads_bp.route("/files")
+@uploads_bp.route("/files", methods=["GET"])
 def list_files():
     try:
         files = os.listdir(UPLOAD_FOLDER)
@@ -34,7 +34,7 @@ def list_files():
     except Exception as e:
         return jsonify({"error": f"Error listing files: {str(e)}"}), 500
 
-@uploads_bp.route("/download/<filename>")
+@uploads_bp.route("/download/<filename>", methods=["GET"])
 def download_file(filename):
     try:
         return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=True)

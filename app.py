@@ -10,7 +10,6 @@ from google.oauth2 import service_account
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from forms import LoginForm, RegistrationForm
-from uploads import uploads_bp
 from keys import OPENAI_KEY
 from routes import app # Import routes but leave models import for later
 from flask_test import app
@@ -18,7 +17,7 @@ from flask_test.forms import LoginForm, RegistrationForm
 
 
 app = Flask(__name__)
-# app.register_blueprint(uploads_bp, url_prefix="/uploads")
+
 
 
 app.config['SECRET_KEY'] = 'your_secret_key'

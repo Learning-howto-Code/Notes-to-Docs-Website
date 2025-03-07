@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from .uploads import uploads_bp
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -18,6 +19,7 @@ def create_app():
     from flask_test.models import User  
     from flask_test.routes import main  
     app.register_blueprint(main)
+    app.register_blueprint(uploads_bp, url_prefix="/uploads")
 
     return app
 

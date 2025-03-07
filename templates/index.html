@@ -8,7 +8,9 @@
     <div class="container">
         <!-- Left Side (File Upload) -->
         <div class="left">
-        
+            <form id="uploadForm">
+                <input type="file" id="fileInput" name="file" multiple class="upload-btn">
+                <button type="submit">Upload</button>
         </div>
 
         <!-- Right Side (Text and Buttons) -->
@@ -18,90 +20,35 @@
             
         </div>
     </div>
-
     <script>
-        // Convert button event listener
-        document.getElementById("convert").addEventListener("click", async function() {
-            try {
-                const response = await fetch("/convert", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ message: "Button clicked!" }) // Optional data
-                });
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent default form submission (no page reload)
 
-                const data = await response.json();
-                
-                // Handle successful response
-                if (data.results) {
-                    const resultsContainer = document.getElementById("results-container");
-                    resultsContainer.innerHTML = ""; // Clear previous results
-
-                    data.results.forEach(result => {
-                        const filename = Object.keys(result)[0];
-                        const text = result[filename].text;
-
-                        const resultHtml = `
-                            <div class="result-item">
-                                <div class="filename">📄 ${filename}</div>
-                                <div class="extracted-text">${text}</div>
-                            </div>
-                        `;
-                        resultsContainer.insertAdjacentHTML("beforeend", resultHtml); // Append new results
-                    });
-                } else {
-                    alert("No results found.");
-                }
-            } catch (error) {
-                console.error("Conversion error:", error);
-                alert("Conversion failed: " + error.message);
-            }
-        });
-
-        // File upload handler
-        document.getElementById("upload-form").addEventListener("submit", async function(event) {
-            event.preventDefault();  // Prevent default form submission
             let formData = new FormData();
-            let files = document.getElementById("file-upload").files;
-
-            if (files.length === 0) {
-                alert("Please select a file first.");
-                return;
-            }
+            let files = document.getElementById("fileInput").files;
+            console.log(files);  // Check if files are being selected;
 
             for (let i = 0; i < files.length; i++) {
-                formData.append("file", files[i]);  // Append each file
+                formData.append("file", files[i]);
             }
 
-            let response = await fetch("/uploads/upload", {
+            fetch("/uploads/upload", {
                 method: "POST",
                 body: formData
-            });
-
-            if (response.ok) {
-                fetchFiles(); // Refresh the file list after uploading
-            } else {
-                alert("File upload failed.");
-            }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("File uploaded successfully!");
+                } else {
+                    console.error("Upload failed.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
         });
-
-        // Fetch list of uploaded files and display them
-        async function fetchFiles() {
-            let response = await fetch("/uploads/files");
-            let data = await response.json();
-            let fileList = document.getElementById("file-list");
-            fileList.innerHTML = ""; // Clear previous list
-
-            data.files.forEach(file => {
-                let listItem = document.createElement("li");
-                listItem.innerHTML = `<a href="/uploads/download/${file}" target="_blank">${file}</a>`;
-                fileList.appendChild(listItem);
-            });
-        }
-
-        fetchFiles();  // Load files on page load
     </script>
+  
+
+        
 
 </body>
 {% endblock %}
