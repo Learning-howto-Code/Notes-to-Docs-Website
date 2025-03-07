@@ -8,25 +8,32 @@
     <div class="container">
         <!-- Left Side (File Upload) -->
         <div class="left">
-            <form id="uploadForm">
-                <input type="file" id="fileInput" name="file" multiple class="upload-btn">
-                <button type="submit">Upload</button>
+            <form id="upload-form">
+                <div class="button-group">
+                    <input type="file" id="file-upload" name="file" multiple> <!-- Allow multiple files -->
+                    <label for="file-upload" class="upload-btn">Choose Files</label>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="upload-btn" id="upload-and-convert">Upload & Convert</button> <!-- Merge Upload and Convert -->
+                </div>
+            </form>
+            <ul id="file-list"></ul> <!-- List to display uploaded files -->
+            <div id="results-container" class="results-section"></div> <!-- Display converted results -->
         </div>
 
         <!-- Right Side (Text and Buttons) -->
         <div class="right">
             <h1>Convert Your Notes to Docs</h1>
             <p>Upload your handwritten notes and instantly convert them into a digital document with AI-powered accuracy.</p>
-            
         </div>
     </div>
+
     <script>
-        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+        document.getElementById("upload-form").addEventListener("submit", function(event) {
             event.preventDefault();  // Prevent default form submission (no page reload)
 
             let formData = new FormData();
-            let files = document.getElementById("fileInput").files;
-            console.log(files);  // Check if files are being selected;
+            let files = document.getElementById("file-upload").files;
 
             for (let i = 0; i < files.length; i++) {
                 formData.append("file", files[i]);
@@ -39,6 +46,7 @@
             .then(response => {
                 if (response.ok) {
                     console.log("File uploaded successfully!");
+                    // You can trigger the conversion process here if needed
                 } else {
                     console.error("Upload failed.");
                 }
@@ -46,9 +54,5 @@
             .catch(error => console.error("Error:", error));
         });
     </script>
-  
-
-        
-
 </body>
 {% endblock %}
