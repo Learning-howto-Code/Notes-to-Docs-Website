@@ -2,7 +2,7 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
 # Load credentials
-SERVICE_ACCOUNT_FILE = "/Users/jakehopkins/Documents/Flask_Test/img-to-docs-450117-078405c7be8a copy.json"
+SERVICE_ACCOUNT_FILE = "flask_test/img-to-docs-450117-078405c7be8a copy.json"
 SCOPES = ["https://www.googleapis.com/auth/documents", "https://www.googleapis.com/auth/drive"]
 
 credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)

@@ -9,9 +9,9 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from forms import LoginForm, RegistrationForm
-from keys import OPENAI_KEY
-from routes import app # Import routes but leave models import for later
+from .forms import LoginForm, RegistrationForm
+from .keys import OPENAI_KEY
+from .routes import app # Import routes but leave models import for later
 from flask_test import app
 from flask_test.forms import LoginForm, RegistrationForm
 
