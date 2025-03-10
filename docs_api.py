@@ -1,5 +1,8 @@
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+import os
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/Users/jakehopkins/Documents/Flask_Test/flask_test/img-to-docs-450117-078405c7be8a copy.json"
+
 
 # Load credentials
 SERVICE_ACCOUNT_FILE = "flask_test/img-to-docs-450117-078405c7be8a copy.json"

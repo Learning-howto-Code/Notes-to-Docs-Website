@@ -1,4 +1,3 @@
-#Handles all conection with SQL database for API keys
 import sqlite3
 from flask import g
 
@@ -17,4 +16,4 @@ def close_db(e=None):
 
 # Close the database connection at the end of a request
 def init_app(app):
-    app.teardown_appcontext(close_db)
+    app.teardown_appcontext(close_db)  # Only handle teardown, not SQLAlchemy

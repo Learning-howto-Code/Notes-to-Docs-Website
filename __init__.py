@@ -1,9 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from .db import init_app  # Import your database setup function
 
-db = SQLAlchemy()
+db = SQLAlchemy()  # Create the SQLAlchemy instance here
 login_manager = LoginManager()
 
 def create_app():
@@ -11,9 +10,11 @@ def create_app():
     app.config['SECRET_KEY'] = 'your-secret-key'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 
-    db.init_app(app)
+    db.init_app(app)  # Initialize SQLAlchemy once
     login_manager.init_app(app)
-    init_app(app)  # Initialize SQLite database
+
+    from .db import init_app  # Import after db is initialized
+    init_app(app)  # This will only handle SQLite teardown, no recursion
 
     from .auth import auth_bp
     from .routes import main
@@ -26,3 +27,8 @@ def create_app():
     app.register_blueprint(api_bp, url_prefix="/api")
 
     return app
+
+@login_manager.user_loader
+def load_user(user_id):
+    from .models import User  # Avoid circular imports
+    return User.query.get(int(user_id))

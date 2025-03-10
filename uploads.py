@@ -1,18 +1,19 @@
 from flask import Blueprint, request, jsonify, send_from_directory
 import os
 from werkzeug.utils import secure_filename
-from .keys import OPENAI_KEY
+# from .keys import OPENAI_KEY
 import base64
 from openai import OpenAI
 from pydantic import BaseModel
 import json
 from .docs_api import add_text
+from flask_login import current_user, login_required
 
 uploads_bp = Blueprint("uploads", __name__)  # Blueprint name should match
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "/Users/jakehopkins/Documents/Flask_Test/uploads")  
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  
-
+@login_required
 @uploads_bp.route("/upload", methods=["POST"])
 def upload_file():
     # Clear the uploads directory before saving new files
@@ -63,7 +64,7 @@ def download_file(filename):
     except Exception as e:
         return jsonify({"error": f"Error downloading file: {str(e)}"}), 404
 def convert():
-    client = OpenAI(api_key=OPENAI_KEY)
+    client = OpenAI(api_key=current_user.key)# uses the logged in key instead of hard coded key
 
     def encode_image(image_path):
         with open(image_path, "rb") as image_file:

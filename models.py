@@ -1,4 +1,4 @@
-from flask_test import db  # Import db from __init__.py after it's initialized
+from . import db  # Import db from __init__.py after it's initialized
 from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
@@ -11,3 +11,4 @@ class User(db.Model, UserMixin):
 
 def get_id(self):
     return str(self.id)  # Required by Flask-Login
+
