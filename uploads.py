@@ -66,7 +66,7 @@ def download_file(filename):
     except Exception as e:
         return jsonify({"error": f"Error downloading file: {str(e)}"}), 404
     pdb_break()
-    
+
 @uploads_bp.route("/debug_key", methods=["GET"])
 @login_required
 def debug_key():
@@ -74,25 +74,24 @@ def debug_key():
     print("Debug - Current user's API key:", current_user.key)
     return jsonify({"api_key": current_user.key})
 def convert():
-    # Debug: Print the current user's API key
-    print("Current user's API key:", current_user.key)
-
-    # Use the logged-in user's API key from the database instead of the hard-coded key
-    client = OpenAI(api_key=current_user.key)
+    client = OpenAI(api_key=current_user.key)  # uses the logged in key
 
     def encode_image(image_path):
         with open(image_path, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode("utf-8")
 
     folder = UPLOAD_FOLDER  # Use the same uploads folder
+
     if not os.path.exists(folder):
         return {"message": "Folder not found!"}
 
     image_files = [f for f in os.listdir(folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+
     if not image_files:
         return {"message": "No image files found!"}
 
     results = []
+
     for image_file in image_files:
         image_path = os.path.join(folder, image_file)
         base64_image = encode_image(image_path)
@@ -105,12 +104,17 @@ def convert():
                     "content": [
                         {
                             "type": "text",
-                            "text": "Extract the text from this image word for word and return it in JSON format with a 'text' field containing the extracted text as a string."
+                            "text": (
+                                "Extract the text from this image word for word and return a JSON object "
+                                "with two keys: 'title' for the document title and 'text' for the extracted content."
+                            )
                         },
                         {
                             "type": "image_url",
-                            "image_url": {"url": f"data:image/jpeg;base64,{base64_image}",
-                                          "detail": "low"}
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_image}",
+                                "detail": "low"
+                            }
                         }
                     ]
                 }
@@ -124,8 +128,20 @@ def convert():
         structured_output = json.loads(json_output)  # Parse JSON response
         results.append({image_file: structured_output})
 
-    text_to_add = "\n".join([item[list(item.keys())[0]]['text'] for item in results])
-    add_text(text_to_add)
-    print("Text added to Google Docs:", text_to_add)
+    # Extract the title and text from results.
+    # Here, we assume each response includes a "title" and "text" key.
+    # For example, you might take the title from the first image's response.
+    extracted_title = results[0][list(results[0].keys())[0]].get("title", "Default Title")
+    extracted_text = "\n".join(
+        [item[list(item.keys())[0]]['text'] for item in results]
+    )
+
+    # Update Google Doc title and add the text.
+    from .docs_api import update_title, add_text
+    update_title(extracted_title)  # Update the doc title using Drive API
+    add_text(extracted_text)         # Append the converted text
+
+    print("Title:", extracted_title)
+    print("Extracted Text:", extracted_text)
 
     return {"message": "Conversion successful!", "results": results}

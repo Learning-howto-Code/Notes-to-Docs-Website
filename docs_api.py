@@ -59,3 +59,11 @@ def share_google_doc():
 # Example usage
 add_text("Hello from Flask!")
 share_google_doc()
+
+def update_title(new_title):
+    body = {"name": new_title}
+    drive_service.files().update(
+        fileId=document_id,
+        body=body
+    ).execute()
+    print("Document title updated to:", new_title)
