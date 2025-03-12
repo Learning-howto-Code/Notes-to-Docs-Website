@@ -13,7 +13,7 @@ def create_app():
     db.init_app(app)  # Initialize SQLAlchemy once
     login_manager.init_app(app)
 
-    from .db import init_app  # Import after db is initialized
+    from .database import init_app  # Import after db is initialized
     init_app(app)  # This will only handle SQLite teardown, no recursion
 
     from .auth import auth_bp
