@@ -63,6 +63,23 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('main.home'))
 
+@main.route('/delete')
+@login_required
+def delete():
+    user = current_user
+    db.session.delete(user)
+    db.session.commit()
+    flash('your acount has been deleted', 'succes')
+    return redirect(url_for('main.home'))
+
+# Dashboard route
+@main.route('/settings')
+def settings():
+    if not current_user.is_authenticated:
+        flash('Must be logged in to view setings', 'danger')
+        return redirect(url_for('main.home'))
+    return render_template('settings.html', 'message')
+
 
 
 

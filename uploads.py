@@ -135,11 +135,10 @@ def convert():
     extracted_text = "\n".join(
         [item[list(item.keys())[0]]['text'] for item in results]
     )
-
-    # Update Google Doc title and add the text.
-    from .docs_api import update_title, add_text
+    from .docs_api import update_title, add_text, share_google_doc
     update_title(extracted_title)  # Update the doc title using Drive API
     add_text(extracted_text)         # Append the converted text
+    share_google_doc()
 
     print("Title:", extracted_title)
     print("Extracted Text:", extracted_text)

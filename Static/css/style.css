@@ -192,3 +192,6 @@ p {
     font-size: 20px;
     font-family: "times_new_roman";
 }
+.flash {
+    color: red
+}

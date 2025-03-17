@@ -1,6 +1,7 @@
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 import os
+from flask_login import current_user
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/Users/jakehopkins/Documents/Flask_Test/flask_test/img-to-docs-450117-078405c7be8a copy.json"
 
 
@@ -19,8 +20,6 @@ drive_service = build("drive", "v3", credentials=credentials)
 document_id = "1Nq9OTr-sQrkNvkGD3LjTJzjfrWv6XUmSL8Ycx1Ko4JU"
 
 # print(f"New document created: https://docs.google.com/document/d/{document_id}/edit")
-
-USER_EMAIL = "jaketoroh@gmail.com"  # Replace with your email
 
 def add_text(text):
     """Adds text to the Google Doc."""
@@ -42,23 +41,26 @@ def add_text(text):
 
 def share_google_doc():
     """Shares the Google Doc with your email."""
+    user_email = current_user.email
     permission = {
         "type": "user",
         "role": "writer",
-        "emailAddress": USER_EMAIL
+        "emailAddress": user_email,
+        "pendingOwner": "true" #doesn't work, need oAuth 
     }
     
     drive_service.permissions().create(
         fileId=document_id,  # Fix: Use the correct document ID
         body=permission,
-        sendNotificationEmail=True
+        sendNotificationEmail=True,
+        # pendingOwner=True
     ).execute()
 
     print(f"Document shared: https://docs.google.com/document/d/{document_id}/edit")
 
 # Example usage
-add_text("Hello from Flask!")
-share_google_doc()
+
+
 
 def update_title(new_title):
     body = {"name": new_title}
