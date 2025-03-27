@@ -1,4 +1,4 @@
-from flask import render_template, request, jsonify, redirect, url_for, flash, Blueprint
+from flask import render_template, request, jsonify, redirect, url_for, flash, Blueprint, session
 from flask_test import db
 from flask_test.models import User
 from flask_login import login_user, login_required, logout_user, current_user
@@ -57,10 +57,12 @@ def index():
 
 # Logout route
 @main.route('/logout')
-@login_required
 def logout():
-    logout_user()
-    flash('You have been logged out.', 'success')
+    if not current_user.is_authenticated:
+        flash('You are not logged in.', 'warning')
+    else:
+        logout_user()
+        flash('You have been logged out.', 'warning')
     return redirect(url_for('main.home'))
 
 @main.route('/delete')
@@ -78,8 +80,18 @@ def settings():
     if not current_user.is_authenticated:
         flash('Must be logged in to view setings', 'danger')
         return redirect(url_for('main.home'))
-    return render_template('settings.html', 'message')
+    return render_template('settings.html', message='test message')
 
+@main.route('/protected-action')
+def protected_action():
+    if 'user' not in session:  # Check if user is logged in
+        return redirect(url_for('login'))  # Redirect to login if not logged in
+    return "You accessed a protected action!"
 
+def button_press():
+    # Ensure user is logged in
+    if not session.get('user_logged_in'):  # Check if user is logged in
+        flash('You must be logged in to upload files.', 'warning')  # Flash the warning
+    return render_template('home.html')
 
 

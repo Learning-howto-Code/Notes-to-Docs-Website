@@ -12,8 +12,5 @@ class User(db.Model, UserMixin):
 
     def get_id(self):
         return str(self.id)  # Required by Flask-Login
-    def get_id(self):
-        return str(self.id)  # Required by Flask-Login
-    def get_id(self):
-        return str(self.id)  # Required by Flask-Login
+
 

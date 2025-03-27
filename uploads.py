@@ -18,6 +18,8 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @uploads_bp.route("/upload", methods=["POST"])
 @login_required
 def upload_file():
+    if not session.get('user_logged_in'):
+        return redirect(url_for('main.home'))  # Redirect back to home page
     # Clear the uploads directory before saving new files
     for file_name in os.listdir(UPLOAD_FOLDER):
         file_path = os.path.join(UPLOAD_FOLDER, file_name)

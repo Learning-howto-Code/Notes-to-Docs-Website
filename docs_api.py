@@ -46,7 +46,7 @@ def share_google_doc():
         "type": "user",
         "role": "writer",
         "emailAddress": user_email,
-        "pendingOwner": "true" #doesn't work, need oAuth 
+        # "pendingOwner": "true" #doesn't work, need oAuth 
     }
     
     drive_service.permissions().create(
