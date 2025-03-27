@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Welcome to the Home Page</h1>
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert alert-warning">
+                {% for category, message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <!-- Left Side (File Upload) -->
+        <div class="left">
+            <form id="upload-form">
+                <div class="button-group">
+                    <input type="file" id="file-upload" name="file" multiple> <!-- Allow multiple files -->
+                    <label for="file-upload" class="upload-btn">Choose Files</label>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="upload-btn" id="upload-and-convert" 
+                            {% if not session.get('user_logged_in') %} disabled {% endif %}>Convert</button>
+                </div>
+            </form>
+            <ul id="file-list"></ul> <!-- List to display uploaded files -->
+            <div id="results-container" class="results-section"></div> <!-- Display converted results -->
+        </div>
+
+        <!-- Right Side (Text and Buttons) -->
+        <div class="right">
+            <h1>Convert Your Notes to Docs</h1>
+            <p>Upload your handwritten notes and instantly convert them into a digital document with AI-powered accuracy.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("upload-form").addEventListener("submit", function(event) {
+            // Check if the user is logged in using server-side logic
+            {% if not session.get('user_logged_in') %}
+                event.preventDefault(); // Prevent form submission if not logged in
+                alert("You must be logged in to upload files."); // Alert the user
+            {% endif %}
+        });
+    </script>
+{% endblock %}
