@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../../Notes to Docs"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}
