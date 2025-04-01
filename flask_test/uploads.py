@@ -9,11 +9,15 @@ import json
 from .docs_api import add_text
 from flask_login import current_user, login_required
 import pdb
+import sys
 
 uploads_bp = Blueprint("uploads", __name__)  # Blueprint name should match
 
-UPLOAD_FOLDER = "/Users/jakehopkins/Documents/Flask_Test/uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+pdb.set_trace()
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+
 
 @uploads_bp.route("/upload", methods=["POST"])
 @login_required
@@ -85,7 +89,6 @@ def convert():
         return {"message": "Folder not found!"}
 
     image_files = [f for f in os.listdir(folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
-
     if not image_files:
         return {"message": "No image files found!"}
 
