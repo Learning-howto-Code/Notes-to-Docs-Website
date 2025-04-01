@@ -9,7 +9,7 @@ import base64
 import json
 from openai import OpenAI
 from pydantic import BaseModel
-from flask_test.keys import OPENAI_KEY
+# from flask_test.keys import OPENAI_KEY
 
 main = Blueprint('main', __name__)
 
