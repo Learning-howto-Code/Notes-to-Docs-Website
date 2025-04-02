@@ -1,4 +1,4 @@
-from flask import render_template, request, jsonify, redirect, url_for, flash, Blueprint, session
+from flask import render_template, request, jsonify, redirect, url_for, flash, Blueprint, session, flash
 from flask_test import db
 from flask_test.models import User
 from flask_login import login_user, login_required, logout_user, current_user
@@ -13,6 +13,7 @@ from pydantic import BaseModel
 
 main = Blueprint('main', __name__)
 
+
 # Home route
 @main.route('/')
 def home():
@@ -22,7 +23,13 @@ def home():
 @main.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
+   
     if form.validate_on_submit():
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
+         flash("Email address already registered. Please use a different email.", "danger")
+         return redirect(url_for('main.register'))
+    
         user = User(username=form.username.data, email=form.email.data, password=form.password.data, key=form.key.data)
         db.session.add(user)
         db.session.commit()

@@ -14,7 +14,6 @@ import sys
 uploads_bp = Blueprint("uploads", __name__)  # Blueprint name should match
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
-pdb.set_trace()
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
