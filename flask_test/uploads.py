@@ -9,17 +9,24 @@ import json
 from .docs_api import add_text
 from flask_login import current_user, login_required
 import pdb
-import sys
+import logging
+
+logger = logging.getLogger('gunicorn.error')
+logger.setLevel(logging.INFO)
+
+# Now use logger instead of print
+logger.info("This will appear in Gunicorn logs")
+logger.error("Error messages will also show up")
 
 uploads_bp = Blueprint("uploads", __name__)  # Blueprint name should match
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 if not os.path.isdir(UPLOAD_FOLDER): #if direcotry doesn't exist it creates it
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    print("direcotry being created")
-    print(UPLOAD_FOLDER)
+    logger.info("direcotry being created")
+    logger.info(UPLOAD_FOLDER)
 else:
-    print(UPLOAD_FOLDER)
+    logger.info(UPLOAD_FOLDER)
 
 
 
