@@ -14,7 +14,13 @@ import sys
 uploads_bp = Blueprint("uploads", __name__)  # Blueprint name should match
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+if not os.path.isdir(UPLOAD_FOLDER): #if direcotry doesn't exist it creates it
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    print("direcotry being created")
+    print(UPLOAD_FOLDER)
+else:
+    print(UPLOAD_FOLDER)
+
 
 
 
