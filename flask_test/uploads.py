@@ -20,7 +20,7 @@ logger.error("Error messages will also show up")
 
 uploads_bp = Blueprint("uploads", __name__)  # Blueprint name should match
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "flask_test/uploads")
 if not os.path.isdir(UPLOAD_FOLDER): #if direcotry doesn't exist it creates it
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     logger.info("direcotry being created")
